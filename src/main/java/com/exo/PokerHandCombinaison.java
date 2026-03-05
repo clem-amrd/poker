@@ -1,4 +1,4 @@
-package com.exo.domain;
+package com.exo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -352,7 +352,7 @@ public class PokerHandCombinaison {
 
     // ------ tous les cas possibles egalité ------
 
-    
+
     private int compareFourOfKind(List<Card> hand1, List<Card> hand2) {
 
         int quad1 = getValueWithCount(hand1, 4);

@@ -1,4 +1,4 @@
-package com.exo.domain;
+package com.exo;
 
 import java.util.List;
 

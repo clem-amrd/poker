@@ -1,10 +1,10 @@
-package com.exo.domain;
+package com.exo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Hand {
-    
+
     private final List<Card> cards;
 
     public Hand(List<Card> holeCards, List<Card> boardCards) {

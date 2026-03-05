@@ -2,10 +2,7 @@ package com.exo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import com.exo.domain.Card;
-import com.exo.domain.Hand;
-import com.exo.domain.Suit;
-import com.exo.domain.Value;
+
 import java.util.List;
 import org.junit.jupiter.api.Test;
 

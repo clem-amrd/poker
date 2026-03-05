@@ -1,4 +1,4 @@
-package com.exo.domain;
+package com.exo;
 
 public enum Category {
     STRAIGHT_FLUSH,

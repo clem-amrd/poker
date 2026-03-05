@@ -1,4 +1,4 @@
-package com.exo.domain;
+package com.exo;
 
 public class Card {
     private final Value value;

@@ -7,13 +7,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.exo.domain.Card;
-import com.exo.domain.Suit;
-import com.exo.domain.Value;
-import com.exo.domain.PokerHandCombinaison;
-import com.exo.domain.PokerHandResult;
-import com.exo.domain.Category;
-
 public class combinaisonTest {
 
     @Test

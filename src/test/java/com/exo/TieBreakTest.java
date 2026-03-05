@@ -6,11 +6,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.exo.domain.Card;
-import com.exo.domain.PokerHandCombinaison;
-import com.exo.domain.Suit;
-import com.exo.domain.Value;
-
 public class TieBreakTest {
     @Test
     void shouldBreakTieBetweenTwoStraights() {
