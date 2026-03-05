@@ -159,14 +159,6 @@ public class PokerHandCombinaison {
     }
 
 
-    private boolean isFlush(List<Card> cards) {
-        return cards.stream()
-                .collect(Collectors.groupingBy(Card::getSuit, Collectors.counting()))
-                .values()
-                .stream()
-                .anyMatch(count -> count >= 5);
-    }
-
     private boolean isStraight(List<Card> cards) {
         return getStraightHighValue(cards) != null;
     }

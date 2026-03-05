@@ -9,7 +9,7 @@ import com.exo.domain.Value;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-public class modelCardTest{
+public class basicTest{
     
     @Test
     void shouldCreateCardWithValueAndSuit() {
