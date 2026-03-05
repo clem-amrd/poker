@@ -4,27 +4,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.Locale.Category;
 
 import org.junit.jupiter.api.Test;
 
 import com.exo.domain.Card;
 import com.exo.domain.Suit;
 import com.exo.domain.Value;
+import com.exo.domain.PokerHandCombinaison;
+import com.exo.domain.PokerHandResult;
+import com.exo.domain.Category;
 
 public class combinaisonTest {
 
     @Test
     void shouldReturnBestFiveCards() {
 
+        Card card1 = new Card(Value.ACE, Suit.SPADE);
+        Card card2 = new Card(Value.KING, Suit.HEART);
+        Card card3 = new Card(Value.QUEEN, Suit.DIAMOND);
+        Card card4 = new Card(Value.JACK, Suit.CLUB);
+        Card card5 = new Card(Value.TEN, Suit.SPADE);
+        Card card6 = new Card(Value.TWO, Suit.HEART);
+        Card card7 = new Card(Value.THREE, Suit.CLUB);
+
         List<Card> cards = List.of(
-                new Card(Value.ACE, Suit.SPADE),
-                new Card(Value.KING, Suit.HEART),
-                new Card(Value.QUEEN, Suit.DIAMOND),
-                new Card(Value.JACK, Suit.CLUB),
-                new Card(Value.TEN, Suit.SPADE),
-                new Card(Value.TWO, Suit.HEART),
-                new Card(Value.THREE, Suit.CLUB)
+            card1, card2, card3, card4, card5, card6, card7
         );
 
         PokerHandCombinaison combinaison = new PokerHandCombinaison();
@@ -34,11 +38,7 @@ public class combinaisonTest {
         assertEquals(5, result.getChosenCards().size());
 
         List<Card> expected = List.of(
-            new Card(Value.ACE, Suit.SPADE),
-            new Card(Value.KING, Suit.HEART),
-            new Card(Value.QUEEN, Suit.DIAMOND),
-            new Card(Value.JACK, Suit.CLUB),
-            new Card(Value.TEN, Suit.SPADE)
+             card1, card2, card3, card4, card5
         );
 
         assertEquals(expected, result.getChosenCards());
