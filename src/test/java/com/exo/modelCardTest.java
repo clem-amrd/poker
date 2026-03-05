@@ -2,9 +2,11 @@ package com.exo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import com.exo.domain.Card;
+import com.exo.domain.Hand;
+import com.exo.domain.Suit;
+import com.exo.domain.Value;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 public class modelCardTest{
@@ -26,7 +28,7 @@ public class modelCardTest{
 
     @Test
     void ShouldHaveFiveCardsInHand() {
-        
+
         // Given
         List<Card> holeCards = List.of(
                 new Card(Value.TWO, Suit.HEART),
@@ -66,7 +68,8 @@ public class modelCardTest{
         );
 
         // When
-        List<Card> allCards = Hand.combine(board, holeCards);
+        Hand hand = new Hand(holeCards, board);
+        List<Card> allCards = hand.combine(board, holeCards);
 
         // Then
         assertEquals(7, allCards.size());
