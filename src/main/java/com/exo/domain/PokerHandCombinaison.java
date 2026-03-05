@@ -292,4 +292,252 @@ public class PokerHandCombinaison {
                 .toList();
         return values.containsAll(List.of(14, 2, 3, 4, 5));
     }
+
+    
+    //comparaison de deux mains (2 joeurs)
+    public int compareHands(List<Card> hand1, List<Card> hand2) {
+
+        PokerHandResult result1 = getBestCombination(hand1);
+        PokerHandResult result2 = getBestCombination(hand2);
+
+        int categoryCompare = Integer.compare(
+                result2.getCategory().ordinal(),
+                result1.getCategory().ordinal()
+        );
+        if (categoryCompare != 0) {
+            return categoryCompare;
+        }
+
+        return compareSameCategory(hand1, hand2, result1.getCategory());
+    }
+
+    //cas ou les deux joueurs ont la meme categorie
+    private int compareSameCategory(List<Card> hand1, List<Card> hand2, Category category) {
+
+        switch (category) {
+            case STRAIGHT_FLUSH:
+                return Integer.compare(
+                        getStraightFlushHighValue(hand1),
+                        getStraightFlushHighValue(hand2)
+                );
+            case FOUR_OF_A_KIND:
+                return compareFourOfKind(hand1, hand2);
+            case FULL_HOUSE:
+                return compareFullHouse(hand1, hand2);
+            case FLUSH:
+                return compareByHighCards(
+                        getBestFlushRanks(hand1),
+                        getBestFlushRanks(hand2)
+                );
+            case STRAIGHT:
+                return Integer.compare(
+                        getStraightHighValue(hand1),
+                        getStraightHighValue(hand2)
+                );
+            case THREE_OF_A_KIND:
+                return compareThreeOfKind(hand1, hand2);
+            case TWO_PAIR:
+                return compareTwoPair(hand1, hand2);
+            case ONE_PAIR:
+                return compareOnePair(hand1, hand2);
+            case HIGH_CARD:
+            default:
+                return compareByHighCards(
+                        getHighCardRanks(hand1),
+                        getHighCardRanks(hand2)
+                );
+        }
+    }
+
+
+    // ------ tous les cas possibles egalité ------
+
+    
+    private int compareFourOfKind(List<Card> hand1, List<Card> hand2) {
+
+        int quad1 = getValueWithCount(hand1, 4);
+        int quad2 = getValueWithCount(hand2, 4);
+        if (quad1 != quad2) {
+            return Integer.compare(quad1, quad2);
+        }
+
+        int kicker1 = getHighestExcluding(hand1, List.of(quad1));
+        int kicker2 = getHighestExcluding(hand2, List.of(quad2));
+
+        return Integer.compare(kicker1, kicker2);
+    }
+
+    private int compareFullHouse(List<Card> hand1, List<Card> hand2) {
+
+        List<Integer> trips1 = getValuesWithCount(hand1, 3);
+        List<Integer> trips2 = getValuesWithCount(hand2, 3);
+
+        int trip1 = trips1.get(0);
+        int trip2 = trips2.get(0);
+        if (trip1 != trip2) {
+            return Integer.compare(trip1, trip2);
+        }
+
+        int pair1 = getBestPairValueForFullHouse(hand1, trip1);
+        int pair2 = getBestPairValueForFullHouse(hand2, trip2);
+
+        return Integer.compare(pair1, pair2);
+    }
+
+    private int compareThreeOfKind(List<Card> hand1, List<Card> hand2) {
+
+        int trip1 = getValueWithCount(hand1, 3);
+        int trip2 = getValueWithCount(hand2, 3);
+        if (trip1 != trip2) {
+            return Integer.compare(trip1, trip2);
+        }
+
+        List<Integer> kickers1 = getHighCardRanksExcluding(hand1, List.of(trip1), 2);
+        List<Integer> kickers2 = getHighCardRanksExcluding(hand2, List.of(trip2), 2);
+
+        return compareByHighCards(kickers1, kickers2);
+    }
+
+    private int compareTwoPair(List<Card> hand1, List<Card> hand2) {
+
+        List<Integer> pairs1 = getValuesWithCount(hand1, 2);
+        List<Integer> pairs2 = getValuesWithCount(hand2, 2);
+
+        int highPair1 = pairs1.get(0);
+        int highPair2 = pairs2.get(0);
+        if (highPair1 != highPair2) {
+            return Integer.compare(highPair1, highPair2);
+        }
+
+        int lowPair1 = pairs1.get(1);
+        int lowPair2 = pairs2.get(1);
+        if (lowPair1 != lowPair2) {
+            return Integer.compare(lowPair1, lowPair2);
+        }
+
+        int kicker1 = getHighestExcluding(hand1, List.of(highPair1, lowPair1));
+        int kicker2 = getHighestExcluding(hand2, List.of(highPair2, lowPair2));
+
+        return Integer.compare(kicker1, kicker2);
+    }
+
+    private int compareOnePair(List<Card> hand1, List<Card> hand2) {
+
+        int pair1 = getValueWithCount(hand1, 2);
+        int pair2 = getValueWithCount(hand2, 2);
+        if (pair1 != pair2) {
+            return Integer.compare(pair1, pair2);
+        }
+
+        List<Integer> kickers1 = getHighCardRanksExcluding(hand1, List.of(pair1), 3);
+        List<Integer> kickers2 = getHighCardRanksExcluding(hand2, List.of(pair2), 3);
+
+        return compareByHighCards(kickers1, kickers2);
+    }
+
+    private int compareByHighCards(List<Integer> ranks1, List<Integer> ranks2) {
+
+        int size = Math.min(ranks1.size(), ranks2.size());
+        for (int i = 0; i < size; i++) {
+            int a = ranks1.get(i);
+            int b = ranks2.get(i);
+            if (a != b) {
+                return Integer.compare(a, b);
+            }
+        }
+        return Integer.compare(ranks1.size(), ranks2.size());
+    }
+
+    private List<Integer> getHighCardRanks(List<Card> cards) {
+        return getHighCardRanksExcluding(cards, List.of(), 5);
+    }
+
+    private List<Integer> getHighCardRanksExcluding(List<Card> cards, List<Integer> excluded, int limit) {
+
+        return cards.stream()
+                .map(c -> c.getValue().getValue())
+                .filter(v -> !excluded.contains(v))
+                .sorted(Comparator.reverseOrder())
+                .limit(limit)
+                .toList();
+    }
+
+    private int getHighestExcluding(List<Card> cards, List<Integer> excluded) {
+
+        return cards.stream()
+                .map(c -> c.getValue().getValue())
+                .filter(v -> !excluded.contains(v))
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    private int getValueWithCount(List<Card> cards, int count) {
+
+        return getValuesWithCount(cards, count).get(0);
+    }
+
+    private List<Integer> getValuesWithCount(List<Card> cards, int count) {
+
+        return countValues(cards).entrySet().stream()
+                .filter(e -> e.getValue() == count)
+                .map(e -> e.getKey().getValue())
+                .sorted(Comparator.reverseOrder())
+                .toList();
+    }
+
+    private int getBestPairValueForFullHouse(List<Card> cards, int tripValue) {
+
+        List<Integer> pairs = countValues(cards).entrySet().stream()
+                .filter(e -> e.getKey().getValue() != tripValue)
+                .filter(e -> e.getValue() >= 2)
+                .map(e -> e.getKey().getValue())
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        return pairs.get(0);
+    }
+
+    private List<Integer> getBestFlushRanks(List<Card> cards) {
+
+        Map<Suit, List<Card>> bySuit = cards.stream()
+                .collect(Collectors.groupingBy(Card::getSuit));
+
+        List<Integer> best = List.of();
+
+        for (List<Card> suited : bySuit.values()) {
+            if (suited.size() < 5) {
+                continue;
+            }
+            List<Integer> ranks = suited.stream()
+                    .map(c -> c.getValue().getValue())
+                    .sorted(Comparator.reverseOrder())
+                    .limit(5)
+                    .toList();
+
+            if (best.isEmpty() || compareByHighCards(ranks, best) > 0) {
+                best = ranks;
+            }
+        }
+
+        return best;
+    }
+
+    private int getStraightFlushHighValue(List<Card> cards) {
+
+        Map<Suit, List<Card>> bySuit = cards.stream()
+                .collect(Collectors.groupingBy(Card::getSuit));
+
+        int best = 0;
+        for (List<Card> suited : bySuit.values()) {
+            if (suited.size() < 5) {
+                continue;
+            }
+            Integer high = getStraightHighValue(suited);
+            if (high != null && high > best) {
+                best = high;
+            }
+        }
+
+        return best;
+    }
 }
